@@ -1,0 +1,163 @@
+{
+    "打开抖音": {
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "com.ss.android.ugc.aweme"
+            }
+        },
+        "post_delay": 10000,
+        "next": [
+            "打开好友界面"
+        ]
+    },
+    "打开好友界面": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    758,
+                    690
+                ]
+            }
+        },
+        "post_delay": 5000,
+        "next": [
+            "上滑列表到好友列"
+        ]
+    },
+    "上滑列表到好友列": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    500,
+                    600
+                ],
+                "end": [
+                    500,
+                    325
+                ],
+                "duration": 500
+            }
+        },
+        "post_delay": 5000,
+        "next": [
+            "识别火花好友",
+            "识别是否到底部",
+            "上滑列表"
+        ]
+    },
+    "识别火花好友": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": "半火花标识.png",
+                "threshold": 0.9,
+                "order_by": "Vertical"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 5000,
+        "timeout": 1000,
+        "next": [
+            "识别并点击图片",
+            "跳过续火花",
+            "识别是否到底部"
+        ],
+        "on_error": [
+            "全部打开完毕"
+        ]
+    },
+    "识别是否到底部": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": "暂时没有更多了",
+                "threshold": 0.5
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "全部打开完毕"
+        ],
+        "on_error": [
+            "上滑列表"
+        ]
+    },
+    "识别并点击图片": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": "续火花.png",
+                "threshold": 0.8,
+                "order_by": "Vertical",
+                "index": 0
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "next": [
+            "返回消息列表"
+        ]
+    },
+    "跳过续火花": {
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "返回消息列表"
+        ]
+    },
+    "返回消息列表": {
+        "action": {
+            "type": "ClickKey",
+            "param": {
+                "key": 4
+            }
+        },
+        "post_delay": 8000,
+        "next": [
+            "识别是否到底部",
+            "上滑列表"
+        ]
+    },
+    "上滑列表": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    500,
+                    600
+                ],
+                "end": [
+                    500,
+                    488
+                ],
+                "duration": 500
+            }
+        },
+        "post_delay": 5000,
+        "next": [
+            "识别火花好友",
+            "识别是否到底部",
+            "上滑列表"
+        ]
+    },
+    "全部打开完毕": {
+        "action": {
+            "type": "DoNothing"
+        }
+    }
+}
