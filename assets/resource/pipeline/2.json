@@ -8,6 +8,37 @@
         },
         "post_delay": 10000,
         "next": [
+            "初始化状态"
+        ]
+    },
+    "初始化状态": {
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "init_state"
+            }
+        },
+        "next": [
+            "处理弹窗",
+            "打开好友界面"
+        ]
+    },
+    "处理弹窗": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "handle_popup"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 2000,
+        "next": [
+            "处理弹窗",
             "打开好友界面"
         ]
     },
@@ -16,8 +47,8 @@
             "type": "Click",
             "param": {
                 "target": [
-                    758,
-                    690
+                    768,
+                    677
                 ]
             }
         },
@@ -43,18 +74,23 @@
         },
         "post_delay": 5000,
         "next": [
-            "识别火花好友",
-            "识别是否到底部",
-            "上滑列表"
+            "浏览屏"
         ]
     },
-    "识别火花好友": {
+    "浏览屏": {
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "匹配未记录火花好友",
+            "处理无匹配"
+        ]
+    },
+    "匹配未记录火花好友": {
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "Custom",
             "param": {
-                "template": "半火花标识.png",
-                "threshold": 0.9,
-                "order_by": "Vertical"
+                "custom_recognition": "match_unsent_spark"
             }
         },
         "action": {
@@ -63,58 +99,74 @@
                 "target": true
             }
         },
-        "post_delay": 5000,
-        "timeout": 1000,
+        "post_delay": 4000,
         "next": [
-            "识别并点击图片",
-            "跳过续火花",
-            "识别是否到底部"
-        ],
-        "on_error": [
-            "全部打开完毕"
+            "聊天页分派"
         ]
     },
-    "识别是否到底部": {
+    "聊天页分派": {
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "校验好友",
+            "未知页返回"
+        ]
+    },
+    "校验好友": {
         "recognition": {
-            "type": "OCR",
+            "type": "Custom",
             "param": {
-                "expected": "暂时没有更多了",
-                "threshold": 0.5
+                "custom_recognition": "verify_chat_title"
             }
         },
         "action": {
             "type": "DoNothing"
         },
         "next": [
-            "全部打开完毕"
-        ],
-        "on_error": [
-            "上滑列表"
+            "识别今日是否发送",
+            "发送续火文案"
         ]
     },
-    "识别并点击图片": {
+    "未知页返回": {
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "返回消息列表"
+        ]
+    },
+    "识别今日是否发送": {
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "Custom",
             "param": {
-                "template": "续火花.png",
-                "threshold": 0.8,
-                "order_by": "Vertical",
-                "index": 0
+                "custom_recognition": "check_sent_today"
             }
         },
         "action": {
-            "type": "Click",
+            "type": "DoNothing"
+        },
+        "next": [
+            "标记已处理"
+        ]
+    },
+    "标记已处理": {
+        "action": {
+            "type": "Custom",
             "param": {
-                "target": true
+                "custom_action": "mark_processed"
             }
         },
         "next": [
             "返回消息列表"
         ]
     },
-    "跳过续火花": {
+    "发送续火文案": {
         "action": {
-            "type": "DoNothing"
+            "type": "Custom",
+            "param": {
+                "custom_action": "send_greeting"
+            }
         },
         "next": [
             "返回消息列表"
@@ -122,18 +174,39 @@
     },
     "返回消息列表": {
         "action": {
-            "type": "ClickKey",
+            "type": "Custom",
             "param": {
-                "key": 4
+                "custom_action": "back_to_list"
             }
         },
-        "post_delay": 8000,
         "next": [
-            "识别是否到底部",
-            "上滑列表"
+            "浏览屏"
         ]
     },
-    "上滑列表": {
+    "处理无匹配": {
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "检查到底部",
+            "上滑到下一屏"
+        ]
+    },
+    "检查到底部": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "check_bottom"
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "全部打开完毕"
+        ]
+    },
+    "上滑到下一屏": {
         "action": {
             "type": "Swipe",
             "param": {
@@ -143,21 +216,107 @@
                 ],
                 "end": [
                     500,
-                    488
+                    350
                 ],
                 "duration": 500
             }
         },
         "post_delay": 5000,
         "next": [
-            "识别火花好友",
-            "识别是否到底部",
-            "上滑列表"
+            "浏览屏"
         ]
     },
     "全部打开完毕": {
         "action": {
-            "type": "DoNothing"
+            "type": "StopApp",
+            "param": {
+                "package": "com.ss.android.ugc.aweme"
+            }
         }
+    },
+    "模板_列表昵称OCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    70,
+                    1280,
+                    610
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": []
+    },
+    "模板_聊天页OCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    90,
+                    1280,
+                    530
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": []
+    },
+    "模板_输入框OCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    630,
+                    1280,
+                    90
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": []
+    },
+    "模板_聊天页标题OCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    90
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": []
+    },
+    "模板_弹窗OCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": []
     }
 }

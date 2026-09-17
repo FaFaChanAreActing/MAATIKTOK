@@ -452,3 +452,12 @@ tools/ImageCropper/**/*.png
 
 config
 debug
+# 运行时数据（含真实昵称记录，不上传）
+user_data/
+
+# 本地备份文件
+*.bak
+*.bak-*
+
+# agent 运行态缓存
+agent/sent_today.json

@@ -26,5 +26,11 @@
             "name": "从主页面开始",
             "entry": "打开好友界面"
         }
-    ]
+    ],
+    "agent": {
+        "child_exec": "python",
+        "child_args": [
+            "../agent/main.py"
+        ]
+    }
 }
