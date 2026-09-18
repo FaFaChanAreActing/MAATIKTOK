@@ -26,6 +26,10 @@ on:
       - "**.py"
   workflow_dispatch:
 
+# 发布到 GitHub Release 需要 contents:write（GitHub 2023+ 默认 token 只读）
+permissions:
+  contents: write
+
 jobs:
   meta:
     runs-on: ubuntu-latest
